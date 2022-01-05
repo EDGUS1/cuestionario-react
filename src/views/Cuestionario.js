@@ -1,13 +1,14 @@
-import { useParams } from 'react-router-dom';
-import Pregunta from './Pregunta';
-import './Cuestionario.css';
-import Contador from './Contador';
+// import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import LeaderBoard from './LeaderBoard';
-import Resultado from './Resultado';
+import Contador from './../components/Contador';
+import Pregunta from './../components/Pregunta';
+import Resultado from './../components/Resultado';
+import LeaderBoard from './../components/LeaderBoard';
+
+import './Cuestionario.css';
 
 export default function Cuestionario() {
-  let params = useParams();
+  // let params = useParams();
   const [preguntaActual, setPreguntaActual] = useState({});
   const [ultimaPregunta, setUltimaPregunta] = useState(false);
   const [resultados, setResultados] = useState(false);

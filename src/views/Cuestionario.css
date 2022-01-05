@@ -1,0 +1,12 @@
+.contenedor {
+  width: 100vw;
+  height: 100vh;
+  text-align: center;
+  padding: 5rem;
+}
+
+.mitad{
+  width: 50%;
+  text-align: center;
+  margin: auto;
+}

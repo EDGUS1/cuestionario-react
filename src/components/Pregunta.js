@@ -1,18 +1,11 @@
 import { Button } from 'antd';
 import './Pregunta.css';
 
-export default function Pregunta({ pregunta, fCambiarPregunta }) {
-  const respuestas = [
-    {
-      id: 1,
-      repuesta: 'voisnvoisanvdis vapsovm vaosmvnop opamvpoas poavsd vano',
-    },
-    { id: 2, repuesta: 'aooaoa' },
-    { id: 3, repuesta: 'ovaowonw apsodv vas' },
-    { id: 4, repuesta: 'ovaowonw' },
-    { id: 5, repuesta: 'aaa aois kamskd' },
-  ];
-
+export default function Pregunta({
+  pregunta,
+  fCambiarPregunta,
+  respuestas = [],
+}) {
   return (
     <>
       <h1>Pregunta {pregunta.id}</h1>

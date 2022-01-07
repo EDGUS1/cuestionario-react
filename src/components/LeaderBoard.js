@@ -14,8 +14,6 @@ export default function LeaderBoard() {
       <Divider plain>
         <h1>LeaderBoard</h1>
       </Divider>
-      {/* <Link to="/">Inicio</Link>
-      <Divider plain></Divider> */}
       <List
         footer={<Link to="/">Inicio</Link>}
         bordered
@@ -24,7 +22,7 @@ export default function LeaderBoard() {
           <Badge.Ribbon text={item.correct}>
             <List.Item>
               <List.Item.Meta
-                title={<a href="#">{item.name}</a>}
+                title={<span>{item.name}</span>}
                 description={item.time}
               />
             </List.Item>

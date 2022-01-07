@@ -1,5 +1,6 @@
-// import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+
 import Contador from './../components/Contador';
 import Pregunta from './../components/Pregunta';
 import Resultado from './../components/Resultado';
@@ -8,83 +9,34 @@ import LeaderBoard from './../components/LeaderBoard';
 import './Cuestionario.css';
 
 export default function Cuestionario() {
-  // let params = useParams();
   //MDijFSWRBnJXise
+  let params = useParams();
+  const [preguntas, setPreguntas] = useState([]);
   const [preguntaActual, setPreguntaActual] = useState({});
   const [ultimaPregunta, setUltimaPregunta] = useState(false);
   const [resultados, setResultados] = useState(false);
   const [correctas, setCorrectas] = useState(0);
+  const [contador, setContador] = useState(1);
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
   const [tiempo, setTiempo] = useState({ min: 0, sec: 0 });
-
-  // console.log(name);
-  const preguntas = [
-    {
-      id: 1,
-      nombre: 'Pregunta 1',
-      respuestas: [
-        {
-          id: 1,
-          repuesta: 'voisnvoisanvdis vapsovm vaosmvnop opamvpoas poavsd vano',
-          correct: true,
-        },
-        { id: 2, repuesta: 'aooaoa', correct: false },
-        { id: 3, repuesta: 'ovaowonw apsodv vas', correct: false },
-        { id: 4, repuesta: 'ovaowonw', correct: false },
-        { id: 5, repuesta: 'aaa aois kamskd', correct: false },
-      ],
-    },
-    {
-      id: 2,
-      nombre: 'Pregunta 2',
-      respuestas: [
-        {
-          id: 11,
-          repuesta: 'voisnvoisanvdis vapsovm vaosmvnop opamvpoas poavsd vano',
-          correct: false,
-        },
-        { id: 21, repuesta: 'aooaoa', correct: false },
-        { id: 31, repuesta: 'ovaowonw apsodv vas', correct: true },
-        { id: 41, repuesta: 'ovaowonw', correct: false },
-        { id: 51, repuesta: 'aaa aois kamskd', correct: false },
-      ],
-    },
-    {
-      id: 3,
-      nombre: 'Pregunta 3',
-      respuestas: [
-        {
-          id: 12,
-          repuesta: 'voisnvoisanvdis vapsovm vaosmvnop opamvpoas poavsd vano',
-          correct: false,
-        },
-        { id: 22, repuesta: 'aooaoa', correct: false },
-        { id: 32, repuesta: 'ovaowonw apsodv vas', correct: true },
-        { id: 42, repuesta: 'ovaowonw', correct: false },
-        { id: 52, repuesta: 'aaa aois kamskd', correct: false },
-      ],
-    },
-    {
-      id: 4,
-      nombre: 'Pregunta 4',
-      respuestas: [
-        {
-          id: 13,
-          repuesta: 'voisnvoisanvdis vapsovm vaosmvnop opamvpoas poavsd vano',
-          correct: false,
-        },
-        { id: 23, repuesta: 'aooaoa', correct: false },
-        { id: 33, repuesta: 'ovaowonw apsodv vas', correct: true },
-        { id: 43, repuesta: 'ovaowonw', correct: false },
-        { id: 53, repuesta: 'aaa aois kamskd', correct: false },
-      ],
-    },
-  ];
+  const [cuest, setCuest] = useState({});
 
   useEffect(() => {
-    setPreguntaActual(preguntas[0]);
-  }, []);
+    // console.log(params);
+
+    // setPreguntaActual(preguntas[0]);
+    fetch(
+      `https://sad-kowalevski-420b1c.netlify.app/.netlify/functions/api/cuestionario/code/${params.param}`
+    )
+      .then(res => res.json())
+      .then(json => {
+        // console.log(json);
+        setPreguntas(json.preguntas);
+        setCuest(json);
+        setPreguntaActual(json.preguntas[0]);
+      });
+  }, [params]);
 
   let timer;
 
@@ -103,13 +55,14 @@ export default function Cuestionario() {
     <div className="contenedor">
       {!ultimaPregunta ? <Contador min={min} sec={sec} /> : ''}
       {!ultimaPregunta ? (
-        preguntaActual.id < preguntas.length ? (
+        contador < preguntas.length ? (
           <Pregunta
             pregunta={preguntaActual}
             respuestas={preguntaActual.respuestas}
             fCambiarPregunta={res => {
               if (res.correct) setCorrectas(correctas + 1);
-              setPreguntaActual(preguntas[preguntaActual.id]);
+              setPreguntaActual(preguntas[contador]);
+              setContador(contador + 1);
             }}
           />
         ) : (
@@ -132,7 +85,7 @@ export default function Cuestionario() {
         />
       ) : (
         <div className="mitad">
-          <LeaderBoard />
+          <LeaderBoard id={cuest._id} />
         </div>
       )}
     </div>

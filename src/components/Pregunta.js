@@ -8,10 +8,10 @@ export default function Pregunta({
 }) {
   return (
     <>
-      <h1>Pregunta {pregunta.id}</h1>
+      <h1>{pregunta.enunciado}</h1>
       {respuestas.map(e => (
-        <Button size="large" key={e.id} onClick={() => fCambiarPregunta(e)}>
-          <div className="boton">{e.repuesta}</div>
+        <Button size="large" key={e._id} onClick={() => fCambiarPregunta(e)}>
+          <div className="boton">{e.nombre}</div>
         </Button>
       ))}
     </>

@@ -1,14 +1,20 @@
 import { Badge, Divider, List } from 'antd';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function LeaderBoard() {
-  const data = [
-    { name: 'Racing', time: '2:10', correct: 10 },
-    { name: 'car', time: '2:12', correct: 90 },
-    { name: 'sprays', time: '3:10', correct: 10 },
-    { name: 'burning', time: '5:10', correct: 100 },
-    { name: 'fuel', time: '10:10', correct: 1 },
-  ];
+export default function LeaderBoard({ id }) {
+  const [data, setData] = useState({});
+  useEffect(() => {
+    fetch(
+      `https://sad-kowalevski-420b1c.netlify.app/.netlify/functions/api/leaderboard/c/${id}`
+    )
+      .then(res => res.json())
+      .then(json => {
+        // console.log(json);
+        setData(json);
+      });
+  }, []);
+
   return (
     <>
       <Divider plain>
@@ -17,13 +23,13 @@ export default function LeaderBoard() {
       <List
         footer={<Link to="/">Inicio</Link>}
         bordered
-        dataSource={data}
+        dataSource={data.participantes}
         renderItem={item => (
-          <Badge.Ribbon text={item.correct}>
+          <Badge.Ribbon text={item.puntos}>
             <List.Item>
               <List.Item.Meta
-                title={<span>{item.name}</span>}
-                description={item.time}
+                title={<span>{item.username}</span>}
+                description={`${item.minuto}:${item.segundo}`}
               />
             </List.Item>
           </Badge.Ribbon>

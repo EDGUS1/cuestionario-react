@@ -43,7 +43,12 @@ export default function Home() {
                 onChange={handleChangeAName}
               />
               <Link to={code}>
-                <Button className="ingresar">Ingresar</Button>
+                <Button
+                  className="ingresar"
+                  onClick={() => sessionStorage.setItem('username', name)}
+                >
+                  Ingresar
+                </Button>
               </Link>
             </>
           )}

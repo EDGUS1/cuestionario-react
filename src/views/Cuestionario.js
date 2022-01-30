@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 import Contador from './../components/Contador';
 import Pregunta from './../components/Pregunta';
@@ -19,6 +20,7 @@ export default function Cuestionario() {
   const [contador, setContador] = useState(1);
   const [min, setMin] = useState(0);
   const [sec, setSec] = useState(0);
+  // const [tiempo, setTiempo] = useState({});
   const [tiempo, setTiempo] = useState({ min: 0, sec: 0 });
   const [cuest, setCuest] = useState({});
 
@@ -51,6 +53,32 @@ export default function Cuestionario() {
     return () => clearInterval(timer);
   }, [sec]);
 
+  const guardarForm = () => {
+    console.log(tiempo);
+    axios
+      .get(
+        `https://sad-kowalevski-420b1c.netlify.app/.netlify/functions/api/leaderboard/c/${cuest._id}`
+      )
+      .then(res => {
+        console.log(res);
+        const participantes = [
+          ...res.data.participantes,
+          {
+            username: sessionStorage.getItem('username'),
+            minuto: min,
+            segundo: sec,
+            puntos: correctas,
+          },
+        ];
+        axios.put(
+          `https://sad-kowalevski-420b1c.netlify.app/.netlify/functions/api/leaderboard/${res.data._id}`,
+          {
+            ...res.data,
+            participantes,
+          }
+        );
+      });
+  };
   return (
     <div className="contenedor">
       {!ultimaPregunta ? <Contador min={min} sec={sec} /> : ''}
@@ -70,16 +98,18 @@ export default function Cuestionario() {
             pregunta={preguntaActual}
             respuestas={preguntaActual.respuestas}
             fCambiarPregunta={res => {
-              setTiempo({ min, sec });
+              setTiempo({ ...tiempo, min, sec });
+              console.log(tiempo);
               if (res.correct) setCorrectas(correctas + 1);
               setUltimaPregunta(true);
               clearInterval(timer);
+              guardarForm();
             }}
           />
         )
       ) : !resultados ? (
         <Resultado
-          porcentaje={(correctas / preguntas.length) * 100}
+          porcentaje={Math.round((correctas / preguntas.length) * 100)}
           tiempo={tiempo}
           fVerResultados={() => setResultados(true)}
         />

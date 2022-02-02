@@ -9,11 +9,18 @@ export default function Pregunta({
   return (
     <>
       <h1>{pregunta.enunciado}</h1>
-      {respuestas.map(e => (
-        <Button size="large" key={e._id} onClick={() => fCambiarPregunta(e)}>
-          <div className="boton">{e.nombre}</div>
-        </Button>
-      ))}
+      {respuestas.map(e => {
+        if (e.nombre != '')
+          return (
+            <Button
+              size="large"
+              key={e._id}
+              onClick={() => fCambiarPregunta(e)}
+            >
+              <div className="boton">{e.nombre}</div>
+            </Button>
+          );
+      })}
     </>
   );
 }

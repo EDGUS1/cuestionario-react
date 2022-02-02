@@ -1,19 +1,18 @@
 import { Badge, Divider, List } from 'antd';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { API_URL, DEV_API_URL } from '../constants';
 
 export default function LeaderBoard({ id }) {
-  const [data, setData] = useState({});
+  const [data, setData] = useState([]);
   useEffect(() => {
-    fetch(
-      `https://sad-kowalevski-420b1c.netlify.app/.netlify/functions/api/leaderboard/c/${id}`
-    )
+    const URL = `${API_URL}/leaderboard/l/${id}`;
+    fetch(URL)
       .then(res => res.json())
       .then(json => {
-        // console.log(json);
-        setData(json);
+        setData([...json]);
       });
-  }, []);
+  }, [id]);
 
   return (
     <>
@@ -23,13 +22,22 @@ export default function LeaderBoard({ id }) {
       <List
         footer={<Link to="/">Inicio</Link>}
         bordered
-        dataSource={data.participantes}
+        dataSource={data}
         renderItem={item => (
-          <Badge.Ribbon text={item.puntos}>
+          <Badge.Ribbon text={item.participantes.puntos}>
             <List.Item>
               <List.Item.Meta
-                title={<span>{item.username}</span>}
-                description={`${item.minuto}:${item.segundo}`}
+                title={<span>{item.participantes.username}</span>}
+                description={`${item.participantes.minuto}:${item.participantes.segundo}`}
+                description={`${
+                  item.participantes.minuto < 10
+                    ? `0${item.participantes.minuto}`
+                    : item.participantes.minuto
+                } : ${
+                  item.participantes.segundo < 10
+                    ? `0${item.participantes.segundo}`
+                    : item.participantes.segundo
+                }`}
               />
             </List.Item>
           </Badge.Ribbon>

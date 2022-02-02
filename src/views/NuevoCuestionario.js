@@ -1,21 +1,9 @@
-import {
-  Button,
-  // Cascader,
-  // Checkbox,
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  // InputNumber,
-  Radio,
-  // Select,
-  Space,
-  // Switch,
-  // TreeSelect,
-} from 'antd';
+import { Button, DatePicker, Divider, Form, Input, Radio, Space } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import TextArea from 'antd/lib/input/TextArea';
+import axios from 'axios';
+import { API_URL } from '../constants';
 
 export default function NuevoCuestionario() {
   const [value, setValue] = useState(1);
@@ -25,11 +13,33 @@ export default function NuevoCuestionario() {
   // };
 
   const onFinish = values => {
-    console.log('Received values of form:', values);
+    //TODO: CAMBIAR USUARIO CREACION
+    axios
+      .post(`${API_URL}/cuestionario`, {
+        ...values,
+        usuario: '61d68450f4200ddc64e58a86',
+        preguntas: values['preguntas'].map(e => {
+          return {
+            enunciado: e['enunciado'],
+            respuestas: [
+              { nombre: e['respuesta1'] || '', correct: e['correct'] === 1 },
+              { nombre: e['respuesta2'] || '', correct: e['correct'] === 2 },
+              { nombre: e['respuesta3'] || '', correct: e['correct'] === 3 },
+              { nombre: e['respuesta4'] || '', correct: e['correct'] === 4 },
+              { nombre: e['respuesta5'] || '', correct: e['correct'] === 5 },
+            ],
+          };
+        }),
+      })
+      .then(function (response) {
+        console.log(response['data']['code']);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   };
 
   const onChange = e => {
-    console.log('radio checked', e.target.value);
     setValue(e.target.value);
   };
   return (
@@ -57,15 +67,15 @@ export default function NuevoCuestionario() {
         <Input placeholder="Ingrese el nombre del cuestionario" />
       </Form.Item>
 
-      <Form.Item label="Fecha de inicio" name="fecha_incio">
+      <Form.Item label="Fecha de inicio" name="fechaIncio">
         <DatePicker />
       </Form.Item>
-      <Form.Item label="Fecha de cierre" name="fecha_fin">
+      <Form.Item label="Fecha de cierre" name="fechaFin">
         <DatePicker />
       </Form.Item>
 
       <Form.Item label="Preguntas">
-        <Form.List name="Preguntas">
+        <Form.List name="preguntas">
           {(fields, { add, remove }) => (
             <>
               {fields.map(({ key, name, ...restField }) => (
@@ -74,7 +84,7 @@ export default function NuevoCuestionario() {
 
                   <Form.Item
                     {...restField}
-                    name={[name, 'pregunta']}
+                    name={[name, 'enunciado']}
                     rules={[
                       {
                         required: true,
@@ -95,7 +105,11 @@ export default function NuevoCuestionario() {
                     }}
                     align="baseline"
                   >
-                    <Form.Item label="Respuesta correcta">
+                    <Form.Item
+                      label="Respuesta correcta"
+                      {...restField}
+                      name={[name, 'correct']}
+                    >
                       <Radio.Group onChange={onChange} value={value}>
                         <Radio value={1}>1</Radio>
                         <Radio value={2}>2</Radio>
@@ -125,25 +139,13 @@ export default function NuevoCuestionario() {
                   >
                     <Input placeholder="Respuesta 2" />
                   </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'respuesta3']}
-                    // rules={[{ required: true, message: 'No' }]}
-                  >
+                  <Form.Item {...restField} name={[name, 'respuesta3']}>
                     <Input placeholder="Respuesta 3" />
                   </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'respuesta4']}
-                    // rules={[{ required: true, message: 'No' }]}
-                  >
+                  <Form.Item {...restField} name={[name, 'respuesta4']}>
                     <Input placeholder="Respuesta 4" />
                   </Form.Item>
-                  <Form.Item
-                    {...restField}
-                    name={[name, 'respuesta5']}
-                    // rules={[{ required: true, message: 'No' }]}
-                  >
+                  <Form.Item {...restField} name={[name, 'respuesta5']}>
                     <Input placeholder="Respuesta 5" />
                   </Form.Item>
                 </div>
